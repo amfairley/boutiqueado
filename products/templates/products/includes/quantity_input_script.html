@@ -1,0 +1,55 @@
+<script type="text/javascript">
+
+    // Disable +/- buttons outside 1-99 range
+    function handleEnableDisable(itemId) {
+        // Get value
+        var currentValue = parseInt($(`#id_qty_${itemId}`).val());
+        // Make a minusDisabled variable if < 2
+        var minusDisabled = currentValue < 2;
+        // Make a plusDisabled if > 98
+        var plusDisabled = currentValue > 98;
+        // prop sets current value to true or false
+        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
+        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+    }
+
+    // Ensure proper enabling/disabling of all inputs on page load
+    var allQtyInputs = $('.qty_input');
+    for(var i = 0; i < allQtyInputs.length; i++){
+        var itemId = $(allQtyInputs[i]).data('item_id');
+        handleEnableDisable(itemId);
+    }
+
+    // Check enable/disable every time the input is changed
+    $('.qty_input').change(function() {
+        var itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    });
+
+    // Increment quantity
+    // On click of increment quantity button
+    $('.increment-qty').click(function(e) {
+       e.preventDefault();
+       // Closest searches up the DOM, find searches down
+       // From the button go up tree to closest input-group class
+       // Then go down to the closes qty_input class and get the first
+       var closestInput = $(this).closest('.input-group').find('.qty_input')[0];
+       var currentValue = parseInt($(closestInput).val());
+       $(closestInput).val(currentValue + 1);
+       // Call the disable button function
+       var itemId = $(this).data('item_id');
+       handleEnableDisable(itemId);
+    });
+
+    // Decrement quantity
+    // Same as increment but minus 1
+    $('.decrement-qty').click(function(e) {
+       e.preventDefault();
+       var closestInput = $(this).closest('.input-group').find('.qty_input')[0];
+       var currentValue = parseInt($(closestInput).val());
+       $(closestInput).val(currentValue - 1);
+       // Call the disable function button
+       var itemId = $(this).data('item_id');
+       handleEnableDisable(itemId);
+    });
+</script>
