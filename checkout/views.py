@@ -30,6 +30,7 @@ def cache_checkout_data(request):
 
 
 def checkout(request):
+    # Set public and secret key
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
     stripe_secret_key = settings.STRIPE_SECRET_KEY
 
@@ -96,7 +97,9 @@ def checkout(request):
         current_bag = bag_contents(request)
         total = current_bag['grand_total']
         stripe_total = round(total * 100)
+        # Set secret key on stripe
         stripe.api_key = stripe_secret_key
+        # Create a payment intent with total and currency
         intent = stripe.PaymentIntent.create(
             amount=stripe_total,
             currency=settings.STRIPE_CURRENCY,
@@ -104,6 +107,7 @@ def checkout(request):
 
         order_form = OrderForm()
 
+    # Message to show that public key is missing
     if not stripe_public_key:
         messages.warning(request, 'Stripe public key is missing. \
             Did you forget to set it in your environment?')
